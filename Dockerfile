@@ -1,14 +1,18 @@
-FROM node:18
+# Use official Python image
+FROM python:3.10-slim
 
+# Set working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Copy requirements first to install dependencies
+COPY requirements.txt .
 
-RUN npm install
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the rest of your application code
 COPY . .
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+# Command to run your app (change if needed)
+CMD ["python", "app.py"]
 
