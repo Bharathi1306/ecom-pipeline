@@ -9,7 +9,7 @@ pipeline {
         stage('Docker Build and Push') {
             steps {
                 script {
-                    docker.image('docker:24.0.2').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
+                    docker.image('docker:24.0.2').inside('--entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock') {
 
                         withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
 
