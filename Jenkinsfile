@@ -2,33 +2,31 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB = "bharathi136"
-        IMAGE_NAME = "ecom-app"
-        EKS_CLUSTER = "ecom-devops-cluster"
-        AWS_REGION = "ap-southeast-1"
+        DOCKER_IMAGE = "bharathi136/ecom-app:latest"
+        DOCKER_CREDENTIALS_ID = "dockerhub-credentials"  // Add this in Jenkins > Credentials
     }
 
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/Bharathi1306/ecom-pipeline.git'
+                git url: 'https://github.com/Bharathi1306/ecom-pipeline.git', branch: 'master'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    dockerImage = docker.build("${DOCKER_HUB}/${IMAGE_NAME}:latest")
-                }
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    docker.withRegistry('', 'docker-hub-credentials') {
-                        dockerImage.push()
-                    }
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $DOCKER_IMAGE
+                        docker logout
+                    '''
                 }
             }
         }
@@ -36,8 +34,9 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh '''
-                aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER
-                kubectl apply -f k8s/deployment.yaml
+                    # Example kubectl apply (modify as per your EKS setup)
+                    kubectl apply -f k8s/deployment.yaml
+                    kubectl apply -f k8s/service.yaml
                 '''
             }
         }
