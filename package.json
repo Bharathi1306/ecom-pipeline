@@ -1,4 +1,3 @@
-cat <<EOF > package.json
 {
   "name": "ecom-app",
   "version": "1.0.0",
@@ -10,4 +9,3 @@ cat <<EOF > package.json
     "express": "^4.18.2"
   }
 }
-EOF
