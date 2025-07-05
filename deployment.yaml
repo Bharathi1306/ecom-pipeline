@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecom-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ecom-app
+  template:
+    metadata:
+      labels:
+        app: ecom-app
+    spec:
+      containers:
+      - name: ecom-container
+        image: bharathi136/ecom-app:latest
+        ports:
+        - containerPort: 3000
+
