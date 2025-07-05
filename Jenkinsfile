@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "bharathi136/ecom-app:latest"
-        DOCKER_CREDENTIALS_ID = "dockerhub-credentials"  // Add this in Jenkins > Credentials
+        DOCKER_CREDENTIALS_ID = "docker-hub-credentials"  // ✅ corrected
     }
 
     stages {
@@ -34,7 +34,6 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh '''
-                    # Example kubectl apply (modify as per your EKS setup)
                     kubectl apply -f k8s/deployment.yaml
                     kubectl apply -f k8s/service.yaml
                 '''
